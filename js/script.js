@@ -14,14 +14,13 @@ const pelis_aventura = peliculas.filter(pelicula => pelicula.genre_ids.includes(
 
 //Generamos una función encargada de crear el HTML de una película para reutilizarlo.
 const getMovieElement = (movie) => {
-    let moviehtml = '<div class="movie">';
-    moviehtml += '<div class="imgmovie">';
-    moviehtml += '<img src="' + path_base_img + movie.poster_path + '" alt="' + movie.title + '">';
-    moviehtml += '</div>';
-    moviehtml += '<div class="titlemovie">' + movie.title + '</div>';
-    moviehtml += '</div>';
-
-    return moviehtml;
+    return `
+    <div class="movie">
+        <div class="imgmovie">
+            <img src="${path_base_img}${movie.poster_path}" alt="${movie.title}">
+        </div>
+        <div class="titlemovie">${movie.title}</div>
+    </div>`;
 }
 
 //Añadimos las películas de cada género a su elemento correspondiente del DOM
