@@ -1,29 +1,33 @@
 import peliculas from './peliculas.js'
 
-// Almacenamos los géneros para seleccionarlos de un modo más sencillo y reutilizable.
-const id_genre_accion = 28;
-const id_genre_thriller = 53;
-const id_genre_aventura = 12;
-
 const path_base_img = "https://image.tmdb.org/t/p/w200";
 
-//Obtenemos las películas de cada género
-const pelis_accion = peliculas.filter(pelicula => pelicula.genre_ids.includes(id_genre_accion));
-const pelis_thriller = peliculas.filter(pelicula => pelicula.genre_ids.includes(id_genre_thriller));
-const pelis_aventura = peliculas.filter(pelicula => pelicula.genre_ids.includes(id_genre_aventura));
+//Definimos los géneros como un array de objetos.
+const generos = [
+    { nombre: "accion",   id_genero: 28 },
+    { nombre: "thriller", id_genero: 53 },
+    { nombre: "aventura", id_genero: 12 },
+];
 
-//Generamos una función encargada de crear el HTML de una película para reutilizarlo.
-const getMovieElement = (movie) => {
-    return `
-    <div class="movie">
+//Función que a partir de un elemento de película genera el html de la película.
+const getMovieElementHTML = (pelicula = {}) => `
+    <div id="movie-${pelicula.id}" class="movie">
         <div class="imgmovie">
-            <img src="${path_base_img}${movie.poster_path}" alt="${movie.title}">
+            <img src="${path_base_img}${pelicula.poster_path}" alt="${pelicula.title}">
         </div>
-        <div class="titlemovie">${movie.title}</div>
+        <div class="titlemovie">${pelicula.title}</div>
     </div>`;
-}
 
-//Añadimos las películas de cada género a su elemento correspondiente del DOM
-document.getElementById("genero-28").innerHTML += pelis_accion.map(pelicula => getMovieElement(pelicula)).join("");
-document.getElementById("genero-53").innerHTML += pelis_thriller.map(pelicula => getMovieElement(pelicula)).join("");
-document.getElementById("genero-12").innerHTML += pelis_aventura.map(pelicula => getMovieElement(pelicula)).join("");
+//Recorremos los géneros y añadimos las películas a su contenedor
+//correspondiente, teniendo en cuenta que en el HTML los contenedores
+//tienen el id "genero-{id}".
+generos.forEach(({ id_genero }) => {
+    const contenedor = document.getElementById(`genero-${id_genero}`);
+    if (!contenedor) return;
+    // Filtramos las películas por el id del género, el resultado lo mapeamos
+    // y lo añadimos al contenedor, haciendo un join para convertir el array en un string.
+    contenedor.innerHTML = peliculas
+        .filter(p => p.genre_ids.includes(id_genero))
+        .map(getMovieElementHTML)
+        .join("");
+});
